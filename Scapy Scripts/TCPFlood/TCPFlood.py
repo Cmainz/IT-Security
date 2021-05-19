@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import argparse
 from scapy.all import *
 import random
