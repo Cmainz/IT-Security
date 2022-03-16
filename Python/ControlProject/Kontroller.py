@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from openpyxl import load_workbook
 from os import getcwd, walk
 from shutil import copyfile
@@ -35,6 +37,7 @@ class Ctrls:
 
 ### Functions ###
 
+
 def createCtrls():
     for value in ws.iter_rows(min_row=2,
                               max_row=maxControlRow,
@@ -61,16 +64,20 @@ def checkForDue(value0, value1, value2, value3, value4):
                 mailingList.append([value0, value1, value2, value3, contactInfo[value2]])
             else:
                 print("Update needed for {}".format(value2))
-        elif dueDateint - todayDate == 10000000:
+        elif dueDateint - todayDate == 10000000: # send a reminder if 10 days is left
             status = "Send a reminder! He got 10 days left"
             if value2 in contactInfo:
                 mailingList.append([value0, value1, value2, value3, contactInfo[value2]])
             else:
                 print("Update needed for {}".format(value2))
-        elif dueDateint - todayDate == 5000000:
+        elif dueDateint - todayDate == 5000000: # send a reminder if 5 days is left
             status = "Send a reminder!"
         else:
             status = "Take it easy"
+            if value2 in contactInfo:
+                mailingList.append([value0, value1, value2, value3, contactInfo[value2]])
+            else:
+                print("Update needed for {}".format(value2))
 
 def contactInfoFunc():
     for value, val in ws.iter_rows(
@@ -79,7 +86,7 @@ def contactInfoFunc():
             min_col=15,
             max_col=16,
             values_only=True):
-        if value == None:
+        if value is None:
             pass
 
         else:
@@ -89,12 +96,12 @@ def contactInfoFunc():
 def makeControlDoc():
     for item in mailingList:
         control = item[1] + ".xlsx"
-        controlTitle = str(item[0]) + " " + item[1] + " " + item[3] + ".xlsx"
+        control_title = str(item[0]) + " " + item[1] + " " + item[3] + ".xlsx"
         for roots, dirs, files in walk("."):
             for file in files:
                 if control in file:
                     original = getcwd() + "\Templates" + "\\" + file
-                    target = getcwd() + "\Temps" + "\\" + controlTitle
+                    target = getcwd() + "\Temps" + "\\" + control_title
                     copyfile(original, target)
                     filesToSend.append(target)
 
@@ -102,17 +109,18 @@ def makeControlDoc():
 
 
 ### Logic ###
-contactInfoFunc()
-createCtrls()
-for i in range(maxControlRow - 1):
-    checkForDue(controlsInSheet[i].number,
-                controlsInSheet[i].control,
-                controlsInSheet[i].responsible,
-                controlsInSheet[i].due,
-                controlsInSheet[i].verification)
+if __name__ == "__main__":
+  contactInfoFunc()
+  createCtrls()
+  for i in range(maxControlRow - 1):
+      checkForDue(controlsInSheet[i].number,
+                  controlsInSheet[i].control,
+                  controlsInSheet[i].responsible,
+                  controlsInSheet[i].due,
+                  controlsInSheet[i].verification)
 
-makeControlDoc()
+  makeControlDoc()
 
-for i in filesToSend:
-    send_message(service, "chr.maints@gmail.com", i.split("\\")[5],
-                 status, [i])
+  for i in filesToSend:
+      send_message(service, "chr.maints@gmail.com", i.split("\\")[-1],
+                   status, [i])
