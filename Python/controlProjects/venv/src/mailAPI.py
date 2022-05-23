@@ -15,39 +15,41 @@ from base64 import urlsafe_b64encode
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
-from mimetypes import guess_type as guess_mime_type
 
 
 
 SCOPES = ['https://mail.google.com/']
 senderEmail = 'jensh6247@gmail.com'
+token_location="credentials\\token.pickle"
+creds_location="credentials\\credentials.json"
+
 
 def gmail_authenticate():
     creds = None
-    if path.exists("credentials\\token.pickle"):
-        with open("credentials\\token.pickle", "rb") as token:
+    if path.exists(token_location):
+        with open(token_location, "rb") as token:
             creds = pickleLoader(token)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials\\credentials.json', SCOPES)
+            flow = InstalledAppFlow.from_client_secrets_file(creds_location, SCOPES)
             creds = flow.run_local_server(port=0)
-        with open("credentials\\token.pickle", "wb") as token:
+        with open(token_location, "wb") as token:
             pickleDumper(creds, token)
     return build('gmail', 'v1', credentials=creds)
 
 service = gmail_authenticate()
 
 def add_attachment(message, filename):
-    filePath = open(filename, 'rb')
-    attachedFile = MIMEBase('application', 'vnd.ms-excel')
-    attachedFile.set_payload(filePath.read())
-    filePath.close()
-    encoders.encode_base64(attachedFile)
+    file_path = open(filename, 'rb')
+    attached_file = MIMEBase('application', 'vnd.ms-excel')
+    attached_file.set_payload(file_path.read())
+    file_path.close()
+    encoders.encode_base64(attached_file)
     filename = path.basename(filename)
-    attachedFile.add_header('Content-Disposition', 'attachment', filename=filename)
-    message.attach(attachedFile)
+    attached_file.add_header('Content-Disposition', 'attachment', filename=filename)
+    message.attach(attached_file)
 
 def build_message(destination, obj, body, attachments=[]):
     message = MIMEMultipart()

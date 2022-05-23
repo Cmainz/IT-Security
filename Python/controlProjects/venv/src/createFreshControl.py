@@ -3,25 +3,25 @@ from openpyxl.styles import NamedStyle
 from datetime import date
 
 sheet = load_workbook(filename="mainControllerDoc\\mainControls.xlsx")
-wsCtrl = sheet.active
-maxControlRow = len(wsCtrl['A'])
-allMainCtrls=set()
+ws_ctrl = sheet.active
+max_control_row = len(ws_ctrl['A'])
+all_main_ctrls=set()
 
-productionSheet = load_workbook(filename="mainControllerDoc\\Kontroller.xlsx")
-wsProdCtrl = productionSheet.active
-maxControlProdRow=len(wsProdCtrl['A'])
-allProdCtrls=set()
+production_sheet = load_workbook(filename="mainControllerDoc\\Kontroller.xlsx")
+ws_prod_ctrl = production_sheet.active
+max_prod_ctrl_row=len(ws_prod_ctrl['A'])
+all_prod_ctrls=set()
 
 ctrlDict={}
 
-def DateToExcel(day, month, year):
+def date_to_excel(day, month, year):
 
   offset = 693594
   current = date(year, month, day)
   n = current.toordinal()
   return (n - offset)
 
-def setCtrl(worksheet,maxRow,finalSet):
+def set_ctrl(worksheet, maxRow, final_set):
   for pages in worksheet:
     for row in pages.iter_rows(min_row=2,
                                max_row=maxRow,
@@ -32,49 +32,44 @@ def setCtrl(worksheet,maxRow,finalSet):
       if row[0]== None:
           continue
       else:
-        finalSet.add(row[0])
+        final_set.add(row[0])
         ctrlDict[row[0]]=(row[1],row[2])
-  return finalSet
+  return final_set
 
-def insertNewCtrl(ctrl,ctrldate,responsible):
-  newCoordA = "A" + str(maxControlProdRow + 1)
-  newCoordB = "B" + str(maxControlProdRow + 1)
-  newCoordC = "C" + str(maxControlProdRow + 1)
-  newCoordE = "E" + str(maxControlProdRow + 1)
+def insert_new_ctrl(ctrl, ctrl_date, responsible):
+  new_coord_a = "A" + str(max_prod_ctrl_row + 1)
+  new_coord_b = "B" + str(max_prod_ctrl_row + 1)
+  new_coord_c = "C" + str(max_prod_ctrl_row + 1)
+  new_coord_e = "E" + str(max_prod_ctrl_row + 1)
 
 
-  newDate = str(ctrldate).strip()[:-9]
-  newDay = int(newDate.split("-")[2])
-  newMonth = int(newDate.split("-")[1])
-  newYear = int(newDate.split("-")[0])
-  newlyDate=DateToExcel(newDay,newMonth,newYear)
+  new_date = str(ctrl_date).strip()[:-9]
+  new_day = int(new_date.split("-")[2])
+  new_month = int(new_date.split("-")[1])
+  new_year = int(new_date.split("-")[0])
+  new_date_ctrl=date_to_excel(new_day, new_month, new_year)
 
-  wsProdCtrl[newCoordA] = int(maxControlProdRow)
-  wsProdCtrl[newCoordB] = ctrl
-  wsProdCtrl[newCoordC] = newlyDate
-  wsProdCtrl[newCoordE] = responsible
+  ws_prod_ctrl[new_coord_a] = int(max_prod_ctrl_row)
+  ws_prod_ctrl[new_coord_b] = ctrl
+  ws_prod_ctrl[new_coord_c] = new_date_ctrl
+  ws_prod_ctrl[new_coord_e] = responsible
 
-  coordwithDate = wsProdCtrl.cell(maxControlProdRow + 1, 3)
+  coordwithDate = ws_prod_ctrl.cell(max_prod_ctrl_row + 1, 3)
   coordwithDate.number_format = 'DD-MM-YYYY'
-  productionSheet.save(r"mainControllerDoc\Kontroller.xlsx")
+  production_sheet.save(r"mainControllerDoc\Kontroller.xlsx")
 
-def checkForMatch(aCtrls,bCtrls):
-  for controls in aCtrls:
-    if controls in bCtrls:
+def check_for_match(a_ctrls, b_ctrls):
+  for controls in a_ctrls:
+    if controls in b_ctrls:
       continue
     else:
       print("\"" + controls + "\" is missing ")
       print(ctrlDict[controls])
-      insertNewCtrl(controls, ctrlDict[controls][0],ctrlDict[controls][1])
+      insert_new_ctrl(controls, ctrlDict[controls][0], ctrlDict[controls][1])
 
 
 
-setCtrl(productionSheet,maxControlProdRow,allProdCtrls)
-setCtrl(sheet,maxControlRow,allMainCtrls)
+set_ctrl(production_sheet, max_prod_ctrl_row, all_prod_ctrls)
+set_ctrl(sheet, max_control_row, all_main_ctrls)
 
-checkForMatch(allMainCtrls,allProdCtrls)
-
-#ws[newCoordC] = newlyDate
-#newlyDate = DateToExcel(newDay, newMonth, newYear)
-#coordwithDate = ws.cell(maxCtrlRowKontrol + 1, 3)
-#coordwithDate.number_format = 'DD-MM-YYYY'
+check_for_match(all_main_ctrls, all_prod_ctrls)

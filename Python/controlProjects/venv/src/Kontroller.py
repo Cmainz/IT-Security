@@ -29,7 +29,7 @@ maxContactsRow = len(wsControllers['A'])
 
 class Ctrls:
   
-  ctrlsList=[]
+  ctrls_list=[]
   
   def __init__(self, number, control, due, verification,responsible):
     self.number = number
@@ -39,13 +39,13 @@ class Ctrls:
     self.responsible = responsible
     
     
-    self.ctrlsList.append(self)
+    self.ctrls_list.append(self)
     
   
 
 ### Functions ###
 
-def contactInfoFunc():
+def contact_info_func():
   for value, val in wsControllers.iter_rows(
     min_row=2,
     max_row=maxContactsRow,
@@ -53,12 +53,12 @@ def contactInfoFunc():
     max_col=2,
     values_only=True):
     if value is None:
-      pass
+      continue
     else:
       conInfo[value] = val
   return conInfo
 
-def createCtrls():
+def create_ctrls():
   for value in wsCtrl.iter_rows(min_row=2,
                             max_row=maxControlRow,
                             min_col=1,
@@ -77,62 +77,62 @@ def createCtrls():
             value[4]
             )
 
-def classMaker(listItem):
+def class_maker(list_item):
   global contactInfo
-  for item in listItem:
-    checkForDue(item.number,
-              item.control,
-              item.due,
-              item.verification,
-              item.responsible)
+  for item in list_item:
+    check_for_due(item.number,
+                  item.control,
+                  item.due,
+                  item.verification,
+                  item.responsible)
 
   return mailingList
-
-
       
-def checkForDue(value0, value1, value2, value3, value4,todayDate=todayDate) -> str:
+def check_for_due(value0, value1, value2, value3, value4, todayDate=todayDate) -> str:
 
   global notes
   
   try:
     type(int(value0)) == int
-    dueDate=value2.date()
-    dueDateint = int(dueDate.strftime("%d%m%Y"))
-    if dueDateint - todayDate == 0:
+
+    due_date=value2.date()
+    due_dateint = int(due_date.strftime("%d%m%Y"))
+
+    if due_dateint - todayDate == 0:
       notes = "Send The email!"
-      sendEmail = True
+      send_email = True
 
-    elif dueDateint - todayDate == 10000000: # send a reminder if 10 days is left
+    elif due_dateint - todayDate == 10000000: # send a reminder if 10 days is left
       notes = "Send a reminder! He got 10 days left"
-      sendEmail = True
+      send_email = True
 
-    elif dueDateint - todayDate == 5000000: # send a reminder if 5 days is left
+    elif due_dateint - todayDate == 5000000: # send a reminder if 5 days is left
       notes = "Send a reminder!"
-      sendEmail = True
+      send_email = True
 
-    elif dueDateint - todayDate == -1000000: # send a reminder if delayed 1 day
+    elif due_dateint - todayDate == -1000000: # send a reminder if delayed 1 day
       notes = "You are late! Please finish this control before end of date"
-      sendEmail = True
+      send_email = True
 
-    elif dueDateint - todayDate == -2000000: # send a reminder if delayed 2 days
+    elif due_dateint - todayDate == -2000000: # send a reminder if delayed 2 days
       notes = "You are late!"
-      sendEmail = True
+      send_email = True
 
-    elif dueDateint - todayDate == -3000000: # send an email to security responsible
+    elif due_dateint - todayDate == -3000000: # send an email to security responsible
       notes = "this control has not been finished in time or has been incorrectly made."
-      sendEmail = True
+      send_email = True
 
     else:
-      sendEmail=False
+      send_email=False
       notes ="Nothing will be done"
       
     if value4 not in conInfo or conInfo[value4] == None:
       print("Update needed for {}".format(value4))
       return "Missing Contact Information"
-    elif sendEmail == True:
-      mailingList.append([value0, value1, dueDate, value3, conInfo[value4],notes])
+    elif send_email == True:
+      mailingList.append([value0, value1, due_date, value3, conInfo[value4],notes])
     else:
-      pass
+      print(notes)
           
   except ValueError:
     print("Something went wrong with your data.\n\"{}\" is not an index number. Control "
@@ -144,7 +144,7 @@ def checkForDue(value0, value1, value2, value3, value4,todayDate=todayDate) -> s
   return notes
 
 
-def makeControlDoc():
+def make_control_doc():
   for item in mailingList:
     control = item[1] + ".xlsx"
     control_title = str(item[0]) + " " + item[1] + " " + str(item[2]) + ".xlsx"
@@ -158,18 +158,17 @@ def makeControlDoc():
           filesToSend.append(target)
   return filesToSend
 
-def sendingEmail():
+def sending_email():
   for item, file in zip(mailingList, filesToSend):
     send_message(service, "chr.maints@gmail.com", str(item[0])+" "+item[1]+" "+str(item[2]), item[5], [file])
-
+    print(item,"was sent")
 ### Logic ###
 
 
 if __name__ == "__main__":
-  contactInfoFunc() #Looks through the contactlists in Excel
-  createCtrls() #Looks through all controls listed in Excel
-  classMaker(Ctrls.ctrlsList) #transforms our list into forms and runs them through checkForDue()
-  makeControlDoc() #Create conntrols from templates
-
-  sendingEmail() #Sends emails
+  contact_info_func() #Looks through the contactlists in Excel
+  create_ctrls() #Looks through all controls listed in Excel
+  class_maker(Ctrls.ctrls_list) #transforms our list into forms and runs them through checkForDue()
+  make_control_doc() #Create conntrols from templates
+  sending_email() #Sends emails
   pickle.dump(zip(mailingList),open("Missingcontrols.dat","wb")) # saving the emails for later usage

@@ -5,25 +5,25 @@ from src.mailAPI import service
 from base64 import urlsafe_b64decode
 from os import path,getcwd
 
-sendersDict = dict()
-titleList = []
-emailSender = []
-downloadableMsg = []
+senders_dict = dict()
+title_List = []
+email_sender = []
+downloadable_Msg = []
 
 
-def previousControl():
-  sentEmails = pickleLoader(open("Missingcontrols.dat", "rb"))
-  for controls in sentEmails:
+def previous_control():
+  sent_emails = pickleLoader(open("Missingcontrols.dat", "rb"))
+  for controls in sent_emails:
     for item in controls:
       title = str(item[0]) + " " + item[1] + " " + str(item[2])
-      titleList.append(title)
+      title_List.append(title)
       sender = item[4]
       print(sender)
-      emailSender.append(sender)
+      email_sender.append(sender)
 
-  return print(titleList)
+  return print(title_List)
 
-def findingmsgID():
+def finding_msg_ID():
   results = service.users().messages().list(userId='me', labelIds=['INBOX']).execute()
   messages = results.get('messages', [])
 
@@ -36,27 +36,27 @@ def findingmsgID():
       msg = service.users().messages().get(userId='me', id=message['id']).execute()
       title = msg['payload']['headers'][21]['value']
       reciever = msg['payload']['headers'][6]['value'][1:-1]
-      modTitle = substractor(pattern, "", title)
-      if modTitle in titleList and reciever in emailSender:
-        msgId = (msg["id"])
-        downloadableMsg.append(msgId)
-        print(modTitle)
-  return print(downloadableMsg)
+      mod_title = substractor(pattern, "", title)
+      if mod_title in title_List and reciever in email_sender:
+        msg_id = (msg["id"])
+        downloadable_Msg.append(msg_id)
+        print(mod_title)
+  return print(downloadable_Msg)
 
 
-def downloadAttachment():
+def download_attachment():
   filename = ""
-  for item in downloadableMsg:
+  for item in downloadable_Msg:
     message = service.users().messages().get(userId='me', id=item).execute()
     try:
-      attId = message['payload']['parts'][1]['body']['attachmentId']
-      att = service.users().messages().attachments().get(userId='me', messageId=message['id'], id=attId).execute()
+      att_id = message['payload']['parts'][1]['body']['attachmentId']
+      att = service.users().messages().attachments().get(userId='me', messageId=message['id'], id=att_id).execute()
       data = att['data']
       file_data = urlsafe_b64decode(data.encode('UTF-8'))
       filename = message['payload']['parts'][1]['filename']
-      Dlpath = path.join(getcwd() + '\\' 'Downloaded controls' + '\\' + filename)
+      dl_path = path.join(getcwd() + '\\' + 'Downloaded controls' + '\\' + filename)
       print("download")
-      with open(Dlpath, 'wb') as f:
+      with open(dl_path, 'wb') as f:
         f.write(file_data)
         f.close()
       service.users().messages().delete(userId='me', id=item).execute()
@@ -70,6 +70,6 @@ def downloadAttachment():
 
 
 ##LOGIC##
-previousControl()
-findingmsgID()
-downloadAttachment()
+previous_control()
+finding_msg_ID()
+download_attachment()
