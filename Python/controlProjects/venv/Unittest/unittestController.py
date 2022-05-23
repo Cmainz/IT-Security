@@ -4,11 +4,11 @@ os.chdir(".."+"\\src")
 from Kontroller import check_for_due,contact_info_func,Ctrls,mailingList
 from datetime import datetime,date
 
-testDate=19042021
-testKontroller="Jens Hansen"
-contactEmail='jensh6247@gmail.com'
+test_date=19042021
+test_kontroller= "Jens Hansen"
+contact_email= 'jensh6247@gmail.com'
 
-class checkforDueUnittest(unittest.TestCase):
+class Check_for_due_unittest(unittest.TestCase):
   def setUp(self) -> None:
     contact_info_func()
 
@@ -19,44 +19,44 @@ class checkforDueUnittest(unittest.TestCase):
 
   def testForZeroDay(self):
     datetimestr=datetime.strptime("19.04.2021", "%d.%m.%Y")
-    message = check_for_due(1, "testControlZero", datetimestr, "", testKontroller, todayDate=testDate)
+    message = check_for_due(1, "testControlZero", datetimestr, "", test_kontroller, today_date=test_date)
     expected = "Send The email!"
     self.assertEqual(expected, message)
 
   def testForFiveDays(self):
     datetimestr = datetime.strptime("24.04.2021", "%d.%m.%Y")
-    message = check_for_due(2, "testControlFive", datetimestr, "", testKontroller, todayDate=testDate)
+    message = check_for_due(2, "testControlFive", datetimestr, "", test_kontroller, today_date=test_date)
     expected = "Send a reminder!"
     self.assertEqual(expected, message)
 
   def testForTenDays(self):
     datetimestr = datetime.strptime("29.04.2021", "%d.%m.%Y")
-    message =check_for_due(3, "testControlTen", datetimestr, "", testKontroller, todayDate=testDate)
+    message =check_for_due(3, "testControlTen", datetimestr, "", test_kontroller, today_date=test_date)
     expected= "Send a reminder! He got 10 days left"
     self.assertEqual(expected,message)
 
   def testForPlentyDays(self):
     datetimestr = datetime.strptime("19.07.2021", "%d.%m.%Y")
-    message = check_for_due(4, "testControlPlenty", datetimestr, "", testKontroller, todayDate=testDate)
+    message = check_for_due(4, "testControlPlenty", datetimestr, "", test_kontroller, today_date=test_date)
     expected = "Nothing will be done"
     self.assertEqual(expected, message)
 
   def testForNegativeOneDay(self):
     datetimestr = datetime.strptime("18.04.2021", "%d.%m.%Y")
-    message = check_for_due(5, "testControlLateOne", datetimestr, "", testKontroller, todayDate=testDate)
+    message = check_for_due(5, "testControlLateOne", datetimestr, "", test_kontroller, today_date=test_date)
     expected = "You are late! Please finish this control before end of date"
     self.assertEqual(expected, message)
 
   def testForNegativeTwoDays(self):
     datetimestr = datetime.strptime("17.04.2021", "%d.%m.%Y")
-    message = check_for_due(6, "testControlLateTwo", datetimestr, "", testKontroller, todayDate=testDate)
+    message = check_for_due(6, "testControlLateTwo", datetimestr, "", test_kontroller, today_date=test_date)
     expected = "You are late!"
 
     self.assertEqual(expected, message)
 
   def testForFailedControl(self):
     datetimestr = datetime.strptime("16.04.2021", "%d.%m.%Y")
-    message = check_for_due(7, "testControlFailed", datetimestr, "", testKontroller, todayDate=testDate)
+    message = check_for_due(7, "testControlFailed", datetimestr, "", test_kontroller, today_date=test_date)
     expected= 'this control has not been finished in time or has been incorrectly made.'
 
     self.assertEqual(expected, message)
@@ -64,12 +64,12 @@ class checkforDueUnittest(unittest.TestCase):
   def testForMissingResponsibility(self):
     contact_info_func()
     datetimestr = datetime.strptime("29.04.2021", "%d.%m.%Y")
-    message =check_for_due(1, 2, datetimestr, "", "Jens Tester", todayDate=testDate)
+    message =check_for_due(1, 2, datetimestr, "", "Jens Tester", today_date=test_date)
     expected= "Missing Contact Information"
     self.assertEqual(expected,message)
 
 
-class contactInfoFuncUnittest(unittest.TestCase):
+class Class_unittest(unittest.TestCase):
   def setUp(self):
     datetimestr = datetime.strptime("29.04.2021", "%d.%m.%Y")
     Ctrls.ctrls_list.clear()
@@ -78,32 +78,32 @@ class contactInfoFuncUnittest(unittest.TestCase):
       'Verify Screening processes',
       datetimestr,
       "X",
-      testKontroller)
+      test_kontroller)
     Ctrls(
       "2",
       'Verify terms and conditions',
       datetimestr,
       "",
-      testKontroller)
+      test_kontroller)
     Ctrls(
       "3",
       'Verify Screening processes',
       datetimestr,
       "",
-      testKontroller)
+      test_kontroller)
 
-  def testClassmaker(self):
+  def classmaker_unittest(self):
     message=mailingList
-    expected=[[7, 'testControlFailed', datetime.date(datetime.strptime("16.04.2021", "%d.%m.%Y")), '', contactEmail, 'this control has not been finished in time or has been incorrectly made.'],
-              [2, 'testControlFive', datetime.date(datetime.strptime("24.04.2021", "%d.%m.%Y")), '', contactEmail, 'Send a reminder!'],
-              [5, 'testControlLateOne', datetime.date(datetime.strptime("18.04.2021", "%d.%m.%Y")), '', contactEmail, 'You are late! Please finish this control before end of date'],
-              [6, 'testControlLateTwo', datetime.date(datetime.strptime("17.04.2021", "%d.%m.%Y")), '', contactEmail, 'You are late!'],
-              [3, 'testControlTen', datetime.date(datetime.strptime("29.04.2021", "%d.%m.%Y")), '', contactEmail, 'Send a reminder! He got 10 days left'],
-              [1, 'testControlZero', datetime.date(datetime.strptime("19.04.2021", "%d.%m.%Y")), '', contactEmail, 'Send The email!']]
+    expected=[[7, 'testControlFailed', datetime.date(datetime.strptime("16.04.2021", "%d.%m.%Y")), '', contact_email, 'this control has not been finished in time or has been incorrectly made.'],
+              [2, 'testControlFive', datetime.date(datetime.strptime("24.04.2021", "%d.%m.%Y")), '', contact_email, 'Send a reminder!'],
+              [5, 'testControlLateOne', datetime.date(datetime.strptime("18.04.2021", "%d.%m.%Y")), '', contact_email, 'You are late! Please finish this control before end of date'],
+              [6, 'testControlLateTwo', datetime.date(datetime.strptime("17.04.2021", "%d.%m.%Y")), '', contact_email, 'You are late!'],
+              [3, 'testControlTen', datetime.date(datetime.strptime("29.04.2021", "%d.%m.%Y")), '', contact_email, 'Send a reminder! He got 10 days left'],
+              [1, 'testControlZero', datetime.date(datetime.strptime("19.04.2021", "%d.%m.%Y")), '', contact_email, 'Send The email!']]
 
     self.assertEqual(expected, message)
 
-  def testCtrlsClassUnittest(self):
+  def ctrls_class_unittest(self):
     message=""
     for item in Ctrls.ctrls_list:
       message+=str(item.number)+" "+item.control+" "+str(item.due)+ " "+item.verification+ " "+ item.responsible +"\n"
