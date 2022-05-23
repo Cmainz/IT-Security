@@ -15,7 +15,7 @@ wsCtrl = sheet["Controls"]
 wsControllers = sheet["Controllers"]
 
 today = date.today()
-todayDate = int(today.strftime("%d%m%Y"))
+date_of_today = int(today.strftime("%d%m%Y"))
 
 conInfo = {}
 filesToSend = []
@@ -88,7 +88,7 @@ def class_maker(list_item):
 
   return mailingList
       
-def check_for_due(value0, value1, value2, value3, value4, today_date=todayDate) -> str:
+def check_for_due(value0, value1, value2, value3, value4, today_date=date_of_today) -> str:
 
   global notes
   
