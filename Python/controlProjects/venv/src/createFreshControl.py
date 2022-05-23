@@ -21,10 +21,10 @@ def date_to_excel(day, month, year):
   n = current.toordinal()
   return (n - offset)
 
-def set_ctrl(worksheet, maxRow, final_set):
+def set_ctrl(worksheet, max_row, final_set):
   for pages in worksheet:
     for row in pages.iter_rows(min_row=2,
-                               max_row=maxRow,
+                               max_row=max_row,
                                min_col=2,
                                max_col=5,
                                values_only=True):
@@ -54,8 +54,8 @@ def insert_new_ctrl(ctrl, ctrl_date, responsible):
   ws_prod_ctrl[new_coord_c] = new_date_ctrl
   ws_prod_ctrl[new_coord_e] = responsible
 
-  coordwithDate = ws_prod_ctrl.cell(max_prod_ctrl_row + 1, 3)
-  coordwithDate.number_format = 'DD-MM-YYYY'
+  coord_with_date = ws_prod_ctrl.cell(max_prod_ctrl_row + 1, 3)
+  coord_with_date.number_format = 'DD-MM-YYYY'
   production_sheet.save(r"mainControllerDoc\Kontroller.xlsx")
 
 def check_for_match(a_ctrls, b_ctrls):

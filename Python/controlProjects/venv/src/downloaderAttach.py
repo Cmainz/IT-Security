@@ -23,7 +23,7 @@ def previous_control():
 
   return print(title_List)
 
-def finding_msg_ID():
+def finding_msg_id():
   results = service.users().messages().list(userId='me', labelIds=['INBOX']).execute()
   messages = results.get('messages', [])
 
@@ -71,5 +71,5 @@ def download_attachment():
 
 ##LOGIC##
 previous_control()
-finding_msg_ID()
+finding_msg_id()
 download_attachment()

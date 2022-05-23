@@ -9,9 +9,9 @@ dl_path = getcwd() + '\\' + 'Downloaded controls'
 
 
 
-
 # Main excel with controls
-main_controls_sheet = load_workbook(filename="mainControllerDoc\\Kontroller.xlsx")
+main_controller_file="mainControllerDoc\\Kontroller.xlsx"
+main_controls_sheet = load_workbook(filename=main_controller_file)
 ws = main_controls_sheet.active
 max_row_control_doc = len(ws['A'])
 
@@ -58,13 +58,13 @@ def check_completion(list_item):
 
     sheet.close()
 
-def validating_control(Listitem):
+def validating_control(list_item):
   count = 0
   try:
-    for item in Listitem:
+    for item in list_item:
       if "yes" == item.lower():
         count += 1
-    percentage = count/len(Listitem) * 100
+    percentage = count / len(list_item) * 100
     if (percentage == 100.0):
       print("Control Done")
       return percentage
@@ -74,12 +74,28 @@ def validating_control(Listitem):
   except ZeroDivisionError:
     print("list is empty. Controller forgot to finish his Control!")
 
+def Validator(valid_list):
+  for i in range(len(input_list_excel)):
+    input_coord = str(max_row_control_doc + i)
+    new_name = input_list_excel[i - 1][0]
+    new_ctrl_date = input_list_excel[i - 1][1]
+    new_responsible = input_list_excel[i - 1][2]
+    new_coord_a = "A" + input_coord
+    new_coord_b = "B" + input_coord
+    new_coord_c = "C" + input_coord
+    new_coord_e = "E" + input_coord
+    ws[new_coord_a] = int(input_coord) - 1
+    ws[new_coord_b] = new_name
+    ws[new_coord_c] = new_ctrl_date
+    coord_with_date = ws.cell(int(input_coord) + 1, 3)
+    coord_with_date.number_format = 'DD-MM-YYYY'
+    ws[new_coord_e] = new_responsible
+    main_controls_sheet.save(main_controller_file)
 
-
-def update_controls(Valid_list):
+def update_controls(valid_list):
   empty_string = ""
 
-  for item in Valid_list:
+  for item in valid_list:
     validated = item[0].rsplit('.', 1)[0]
     new_ctrl_date=str(item[1]).strip()[:-9]
     new_date=int(new_ctrl_date.split("-")[2])
@@ -116,22 +132,7 @@ def update_controls(Valid_list):
             empty_string += str(cell.value) + " "
             count += 1
 
-  for i in range(len(input_list_excel)):
-   input_coord=str(max_row_control_doc +i)
-   new_name=input_list_excel[i - 1][0]
-   new_ctrl_date=input_list_excel[i-1][1]
-   new_responsible=input_list_excel[i - 1][2]
-   new_coord_a = "A" + input_coord
-   new_coord_b = "B" + input_coord
-   new_coord_c = "C" + input_coord
-   new_coord_e = "E" + input_coord
-   ws[new_coord_a] = int(input_coord)-1
-   ws[new_coord_b] = new_name
-   ws[new_coord_c] = new_ctrl_date
-   coord_with_date = ws.cell(int(input_coord)+1, 3)
-   coord_with_date.number_format = 'DD-MM-YYYY'
-   ws[new_coord_e] = new_responsible
-   main_controls_sheet.save(r"mainControllerDoc\Kontroller.xlsx")
+  Validator(input_list_excel)
 
 
 

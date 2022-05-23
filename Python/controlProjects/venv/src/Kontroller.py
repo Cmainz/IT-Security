@@ -88,7 +88,7 @@ def class_maker(list_item):
 
   return mailingList
       
-def check_for_due(value0, value1, value2, value3, value4, todayDate=todayDate) -> str:
+def check_for_due(value0, value1, value2, value3, value4, today_date=todayDate) -> str:
 
   global notes
   
@@ -98,27 +98,27 @@ def check_for_due(value0, value1, value2, value3, value4, todayDate=todayDate) -
     due_date=value2.date()
     due_dateint = int(due_date.strftime("%d%m%Y"))
 
-    if due_dateint - todayDate == 0:
+    if due_dateint - today_date == 0:
       notes = "Send The email!"
       send_email = True
 
-    elif due_dateint - todayDate == 10000000: # send a reminder if 10 days is left
+    elif due_dateint - today_date == 10000000: # send a reminder if 10 days is left
       notes = "Send a reminder! He got 10 days left"
       send_email = True
 
-    elif due_dateint - todayDate == 5000000: # send a reminder if 5 days is left
+    elif due_dateint - today_date == 5000000: # send a reminder if 5 days is left
       notes = "Send a reminder!"
       send_email = True
 
-    elif due_dateint - todayDate == -1000000: # send a reminder if delayed 1 day
+    elif due_dateint - today_date == -1000000: # send a reminder if delayed 1 day
       notes = "You are late! Please finish this control before end of date"
       send_email = True
 
-    elif due_dateint - todayDate == -2000000: # send a reminder if delayed 2 days
+    elif due_dateint - today_date == -2000000: # send a reminder if delayed 2 days
       notes = "You are late!"
       send_email = True
 
-    elif due_dateint - todayDate == -3000000: # send an email to security responsible
+    elif due_dateint - today_date == -3000000: # send an email to security responsible
       notes = "this control has not been finished in time or has been incorrectly made."
       send_email = True
 
