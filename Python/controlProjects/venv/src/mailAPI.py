@@ -51,7 +51,7 @@ json Library to make a mime class for the attachment
 """
 
 SCOPES = ['https://mail.google.com/']
-senderEmail = 'jensh6247@gmail.com'
+with open('credentials\\email.txt') as email:sender_email= email.read()
 token_location="credentials\\token.json"
 creds_location="credentials\\credentials.json"
 
@@ -94,7 +94,7 @@ def build_message(destination, obj, body, attachments):
     """
     message = MIMEMultipart()
     message['to'] = destination
-    message['from'] = senderEmail
+    message['from'] = sender_email
     message['subject'] = obj
     message.attach(MIMEText(body))
     for filename in attachments:
