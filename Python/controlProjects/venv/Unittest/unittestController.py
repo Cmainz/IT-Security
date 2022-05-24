@@ -8,7 +8,7 @@ test_date=19042021
 test_kontroller= "Jens Hansen"
 contact_email= 'jensh6247@gmail.com'
 
-class Check_for_due_unittest(unittest.TestCase):
+class CheckForDueUnittest(unittest.TestCase):
   def setUp(self) -> None:
     contact_info_func()
 
@@ -69,7 +69,7 @@ class Check_for_due_unittest(unittest.TestCase):
     self.assertEqual(expected,message)
 
 
-class Class_unittest(unittest.TestCase):
+class ClassUnittest(unittest.TestCase):
   def setUp(self):
     datetimestr = datetime.strptime("29.04.2021", "%d.%m.%Y")
     Ctrls.ctrls_list.clear()

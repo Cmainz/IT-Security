@@ -74,12 +74,12 @@ def validating_control(list_item):
   except ZeroDivisionError:
     print("list is empty. Controller forgot to finish his Control!")
 
-def Validator(valid_list):
-  for i in range(len(input_list_excel)):
+def validator(chosen_ctrls):
+  for i in range(len(chosen_ctrls)):
     input_coord = str(max_row_control_doc + i)
-    new_name = input_list_excel[i - 1][0]
-    new_ctrl_date = input_list_excel[i - 1][1]
-    new_responsible = input_list_excel[i - 1][2]
+    new_name = valid_list[i - 1][0]
+    new_ctrl_date = chosen_ctrls[i - 1][1]
+    new_responsible = chosen_ctrls[i - 1][2]
     new_coord_a = "A" + input_coord
     new_coord_b = "B" + input_coord
     new_coord_c = "C" + input_coord
@@ -103,6 +103,7 @@ def update_controls(valid_list):
     new_year = int(new_ctrl_date.split("-")[0])
     new_ctrl_date=date_to_excel(new_date, new_month, new_year)
 
+
     new_responsible=item[2]
     for rows in ws.iter_rows(min_row=0,
                            max_row=max_row_control_doc,
@@ -111,7 +112,6 @@ def update_controls(valid_list):
       count = 0
       for cell in rows:
         if cell.value == None:
-          #print(empty_string.strip()[:-9])
           count += 1
 
           if (empty_string.strip()[:-9] == validated):
@@ -132,7 +132,7 @@ def update_controls(valid_list):
             empty_string += str(cell.value) + " "
             count += 1
 
-  Validator(input_list_excel)
+  validator(input_list_excel)
 
 
 
