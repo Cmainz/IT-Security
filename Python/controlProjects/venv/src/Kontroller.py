@@ -5,7 +5,8 @@ from os import getcwd, walk
 from shutil import copyfile
 from datetime import date
 from src.mailAPI import send_message, service
-import pickle
+from json import dump
+
 
 ### Variables ###
 
@@ -172,5 +173,5 @@ if __name__ == "__main__":
   class_maker(Ctrls.ctrls_list) #transforms our list into forms and runs them through checkForDue()
   make_control_doc() #Create conntrols from templates
   sending_email() #Sends emails
-  with open("Missingcontrols.dat","wb") as dump_file:
-    pickle.dump(zip(mailingList),dump_file) # saving the emails for later usage
+  with open("Missingcontrols.json", "w") as out_file:
+    dump(mailingList, out_file,indent=6,default=str)

@@ -71,7 +71,7 @@ def validating_control(list_item):
     else:
       print("Control Failed")
       return percentage
-  except ZeroDivisionError:
+  except (ZeroDivisionError, AttributeError):
     print("list is empty. Controller forgot to finish his Control!")
     return 0
 

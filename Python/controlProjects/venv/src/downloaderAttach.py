@@ -1,9 +1,9 @@
 from re import sub as substractor
 from re import compile as compiler
-from pickle import load as pickleLoader
 from src.mailAPI import service
 from base64 import urlsafe_b64decode
 from os import path,getcwd
+from json import load
 
 senders_dict = {}
 title_List = []
@@ -13,15 +13,13 @@ downloadable_Msg = []
 
 
 def previous_control():
-  with open("Missingcontrols.dat", "rb") as dump_file:
-    sent_emails = pickleLoader(dump_file)
-    for controls in sent_emails:
-      for item in controls:
-        title = str(item[0]) + " " + item[1] + " " + str(item[2])
-        title_List.append(title)
-        sender = item[4]
-        print(sender)
-        email_sender.append(sender)
+  with open("Missingcontrols.json") as json_file:
+    sent_emails = load(json_file)
+    for item in sent_emails:
+      title = str(item[0]) + " " + item[1] + " " + str(item[2])
+      title_List.append(title)
+      sender = item[4]
+      email_sender.append(sender)
 
   return print(title_List)
 
