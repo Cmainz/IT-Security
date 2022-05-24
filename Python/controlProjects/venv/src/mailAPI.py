@@ -42,16 +42,16 @@ def gmail_authenticate():
 service = gmail_authenticate()
 
 def add_attachment(message, filename):
-    file_path = open(filename, 'rb')
-    attached_file = MIMEBase('application', 'vnd.ms-excel')
-    attached_file.set_payload(file_path.read())
-    file_path.close()
-    encoders.encode_base64(attached_file)
-    filename = path.basename(filename)
-    attached_file.add_header('Content-Disposition', 'attachment', filename=filename)
-    message.attach(attached_file)
+    with open(filename, "rb") as file_path:
+        attached_file = MIMEBase('application', 'vnd.ms-excel')
+        attached_file.set_payload(file_path.read())
+        file_path.close()
+        encoders.encode_base64(attached_file)
+        filename = path.basename(filename)
+        attached_file.add_header('Content-Disposition', 'attachment', filename=filename)
+        message.attach(attached_file)
 
-def build_message(destination, obj, body, attachments=[]):
+def build_message(destination, obj, body, attachments):
     message = MIMEMultipart()
     message['to'] = destination
     message['from'] = senderEmail
@@ -61,7 +61,7 @@ def build_message(destination, obj, body, attachments=[]):
         add_attachment(message, filename)
     return {'raw': urlsafe_b64encode(message.as_bytes()).decode()}
 
-def send_message(service, destination, obj, body, attachments=[]):
+def send_message(service, destination, obj, body, attachments):
     return service.users().messages().send(
       userId="me",
       body=build_message(destination, obj, body, attachments)

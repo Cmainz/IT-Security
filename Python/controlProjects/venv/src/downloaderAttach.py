@@ -5,21 +5,23 @@ from src.mailAPI import service
 from base64 import urlsafe_b64decode
 from os import path,getcwd
 
-senders_dict = dict()
+senders_dict = {}
 title_List = []
 email_sender = []
 downloadable_Msg = []
 
 
+
 def previous_control():
-  sent_emails = pickleLoader(open("Missingcontrols.dat", "rb"))
-  for controls in sent_emails:
-    for item in controls:
-      title = str(item[0]) + " " + item[1] + " " + str(item[2])
-      title_List.append(title)
-      sender = item[4]
-      print(sender)
-      email_sender.append(sender)
+  with open("Missingcontrols.dat", "rb") as dump_file:
+    sent_emails = pickleLoader(dump_file)
+    for controls in sent_emails:
+      for item in controls:
+        title = str(item[0]) + " " + item[1] + " " + str(item[2])
+        title_List.append(title)
+        sender = item[4]
+        print(sender)
+        email_sender.append(sender)
 
   return print(title_List)
 
@@ -30,7 +32,7 @@ def finding_msg_id():
   pattern = compiler(r'Fwd: |FWD: |re: |Re: ')
 
   if not messages:
-    return(print("No messages found."))
+    print("No messages found.")
   else:
     for message in messages:
       msg = service.users().messages().get(userId='me', id=message['id']).execute()
@@ -40,8 +42,6 @@ def finding_msg_id():
       if mod_title in title_List and reciever in email_sender:
         msg_id = (msg["id"])
         downloadable_Msg.append(msg_id)
-        print(mod_title)
-  return print(downloadable_Msg)
 
 
 def download_attachment():

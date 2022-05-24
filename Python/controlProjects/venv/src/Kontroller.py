@@ -93,6 +93,7 @@ def check_for_due(value0, value1, value2, value3, value4, today_date=date_of_tod
   global notes
   
   try:
+    print(int(value0))
     type(int(value0)) == int
 
     due_date=value2.date()
@@ -171,4 +172,5 @@ if __name__ == "__main__":
   class_maker(Ctrls.ctrls_list) #transforms our list into forms and runs them through checkForDue()
   make_control_doc() #Create conntrols from templates
   sending_email() #Sends emails
-  pickle.dump(zip(mailingList),open("Missingcontrols.dat","wb")) # saving the emails for later usage
+  with open("Missingcontrols.dat","wb") as dump_file:
+    pickle.dump(zip(mailingList),dump_file) # saving the emails for later usage

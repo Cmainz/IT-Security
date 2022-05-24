@@ -62,7 +62,7 @@ def validating_control(list_item):
   count = 0
   try:
     for item in list_item:
-      if "yes" == item.lower():
+      if item.lower() == "yes":
         count += 1
     percentage = count / len(list_item) * 100
     if (percentage == 100.0):
@@ -73,11 +73,12 @@ def validating_control(list_item):
       return percentage
   except ZeroDivisionError:
     print("list is empty. Controller forgot to finish his Control!")
+    return 0
 
 def validator(chosen_ctrls):
   for i in range(len(chosen_ctrls)):
     input_coord = str(max_row_control_doc + i)
-    new_name = valid_list[i - 1][0]
+    new_name = chosen_ctrls[i - 1][0]
     new_ctrl_date = chosen_ctrls[i - 1][1]
     new_responsible = chosen_ctrls[i - 1][2]
     new_coord_a = "A" + input_coord
@@ -119,7 +120,7 @@ def update_controls(valid_list):
             ws[coord_of_interest] = 'X'
             ctrl_name=empty_string.strip()[:-20][2:]
             input_list_excel.append((ctrl_name,new_ctrl_date,new_responsible))
-            move("Downloaded controls\\" + item[0], "Evidence\\"+ctrl_name + "\\" + item[0])
+            #move("Downloaded controls\\" + item[0], "Evidence\\"+ctrl_name + "\\" + item[0])
 
             empty_string = ""
           else:
