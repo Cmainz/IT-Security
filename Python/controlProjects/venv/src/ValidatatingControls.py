@@ -77,6 +77,8 @@ def validating_control(list_item):
 
 def validator(chosen_ctrls):
   for i in range(len(chosen_ctrls)):
+    if (len(chosen_ctrls)) == 0:
+      i = 1
     input_coord = str(max_row_control_doc + i)
     new_name = chosen_ctrls[i - 1][0]
     new_ctrl_date = chosen_ctrls[i - 1][1]

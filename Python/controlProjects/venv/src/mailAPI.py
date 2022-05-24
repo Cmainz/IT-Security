@@ -1,54 +1,26 @@
 ### Mail Libaries ###
 
 #pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
-"""
-System Module for finding creds
-"""
+"""System Module for finding creds"""
 from os import path
-"""
-google Library to build gmail credentials
-"""
+"""google Library to build gmail credentials"""
 from googleapiclient.discovery import build
-
-"""
-google Library to create OAuth authorisation flow
-"""
+"""google Library to create OAuth authorisation flow"""
 from google_auth_oauthlib.flow import InstalledAppFlow
-"""
-google Library to utilize the credentials in the project
-"""
+"""google Library to utilize the credentials in the project"""
 from google.oauth2.credentials import Credentials
-"""
-google Library to make the requests to google for authorisation 
-"""
+"""google Library to make the requests to google for authorisation """
 from google.auth.transport.requests import Request
-
-"""
-email Library to encode attachments  
-"""
+"""email Library to encode attachments  """
 from email import encoders
-"""
-base64 Library to encode messages to b64 
-"""
+"""base64 Library to encode messages to b64 """
 from base64 import urlsafe_b64encode
-
-"""
-email Library to replicate mime objects in python
-"""
-
+"""email Library to replicate mime objects in python"""
 from email.mime.text import MIMEText
-"""
-email Library to make a mime class
-"""
+"""email Library to make a mime class"""
 from email.mime.multipart import MIMEMultipart
-"""
-email Library to make a mime class for the attachment
-"""
+"""email Library to make a mime class for the attachment"""
 from email.mime.base import MIMEBase
-
-"""
-json Library to make a mime class for the attachment
-"""
 
 SCOPES = ['https://mail.google.com/']
 with open('credentials\\email.txt') as email:sender_email= email.read()
