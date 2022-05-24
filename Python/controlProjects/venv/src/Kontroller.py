@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
+"""
+This file checks if reminders should be sent or not.
 
+"""
 from openpyxl import load_workbook
 from os import getcwd, walk
 from shutil import copyfile
@@ -29,6 +32,7 @@ maxContactsRow = len(wsControllers['A'])
 
 
 class Ctrls:
+  """ Creates order of the individual Controls"""
   
   ctrls_list=[]
   
@@ -47,6 +51,7 @@ class Ctrls:
 ### Functions ###
 
 def contact_info_func():
+  """ Creates a list of available controllers and their emails"""
   for value, val in wsControllers.iter_rows(
     min_row=2,
     max_row=maxContactsRow,
@@ -60,6 +65,7 @@ def contact_info_func():
   return conInfo
 
 def create_ctrls():
+  """ Function to find all the controls that are undone"""
   for value in wsCtrl.iter_rows(min_row=2,
                             max_row=maxControlRow,
                             min_col=1,
@@ -79,6 +85,7 @@ def create_ctrls():
             )
 
 def class_maker(list_item):
+  """ ensures that all controls goes into check for due func"""
   global contactInfo
   for item in list_item:
     check_for_due(item.number,
@@ -90,7 +97,7 @@ def class_maker(list_item):
   return mailingList
       
 def check_for_due(value0, value1, value2, value3, value4, today_date=date_of_today) -> str:
-
+  """ Finds the controls actions are needed"""
   global notes
   
   try:
@@ -147,6 +154,7 @@ def check_for_due(value0, value1, value2, value3, value4, today_date=date_of_tod
 
 
 def make_control_doc():
+  """ Creates an email template from the controls"""
   for item in mailingList:
     control = item[1] + ".xlsx"
     control_title = str(item[0]) + " " + item[1] + " " + str(item[2]) + ".xlsx"
@@ -161,17 +169,18 @@ def make_control_doc():
   return filesToSend
 
 def sending_email():
+  """" Sends the email """
   for item, file in zip(mailingList, filesToSend):
     send_message(service, "chr.maints@gmail.com", str(item[0])+" "+item[1]+" "+str(item[2]), item[5], [file])
     print(item,"was sent")
+
+
 ### Logic ###
-
-
 if __name__ == "__main__":
-  contact_info_func() #Looks through the contactlists in Excel
-  create_ctrls() #Looks through all controls listed in Excel
-  class_maker(Ctrls.ctrls_list) #transforms our list into forms and runs them through checkForDue()
-  make_control_doc() #Create conntrols from templates
-  sending_email() #Sends emails
+  contact_info_func()
+  create_ctrls()
+  class_maker(Ctrls.ctrls_list)
+  make_control_doc()
+  sending_email()
   with open("Missingcontrols.json", "w") as out_file:
     dump(mailingList, out_file,indent=6,default=str)

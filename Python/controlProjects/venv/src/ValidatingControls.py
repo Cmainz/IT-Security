@@ -1,8 +1,10 @@
 from openpyxl import load_workbook
 from os import getcwd, walk
 from shutil import move
-import datetime
+
+from datetime import date
 from openpyxl.styles import NamedStyle
+from sharedScripts import input_to_excel
 
 #downloaded sheets
 dl_path = getcwd() + '\\' + 'Downloaded controls'
@@ -10,10 +12,10 @@ dl_path = getcwd() + '\\' + 'Downloaded controls'
 
 
 # Main excel with controls
-main_controller_file="mainControllerDoc\\Kontroller.xlsx"
-main_controls_sheet = load_workbook(filename=main_controller_file)
-ws = main_controls_sheet.active
-max_row_control_doc = len(ws['A'])
+prod_controller_file= "mainControllerDoc\\Kontroller.xlsx"
+production_sheet = load_workbook(filename=prod_controller_file)
+ws_prod_ctrl = production_sheet.active
+max_prod_ctrl_row = len(ws_prod_ctrl['A'])
 
 
 found_files=[]
@@ -22,18 +24,20 @@ validatedControls = []
 input_list_excel=[]
 
 def date_to_excel(day, month, year):
-
+  """ Takes a date and make it readable for excel"""
   offset = 693594
-  current = datetime.date(year, month, day)
+  current = date(year, month, day)
   n = current.toordinal()
   return (n - offset)
 
 def finding_files():
+  """ Finds the controls"""
   for roots, dirs, files in walk(dl_path):
     for file in files:
       found_files.append(file)
 
 def check_completion(list_item):
+  """ Checks if controls have been filled"""
   for file in list_item:
     sheet = load_workbook(dl_path + '\\' + file)
     ws = sheet.active
@@ -49,7 +53,7 @@ def check_completion(list_item):
         dl_controls.append(value[3])
 
     if (validating_control(dl_controls) == 100.0):
-      if isinstance(value[6], datetime.date) and value[7]!= None:
+      if isinstance(value[6], date) and value[7]!= None:
         validatedControls.append([file,value[6],value[7],value[8]])
       else:
         print("control Went bad")
@@ -59,6 +63,7 @@ def check_completion(list_item):
     sheet.close()
 
 def validating_control(list_item):
+  """ Validates if controls have been filled correctly, helping func for check_completion"""
   count = 0
   try:
     for item in list_item:
@@ -75,27 +80,9 @@ def validating_control(list_item):
     print("list is empty. Controller forgot to finish his Control!")
     return 0
 
-def validator(chosen_ctrls):
-  for i in range(len(chosen_ctrls)):
-    if (len(chosen_ctrls)) == 0:
-      i = 1
-    input_coord = str(max_row_control_doc + i)
-    new_name = chosen_ctrls[i - 1][0]
-    new_ctrl_date = chosen_ctrls[i - 1][1]
-    new_responsible = chosen_ctrls[i - 1][2]
-    new_coord_a = "A" + input_coord
-    new_coord_b = "B" + input_coord
-    new_coord_c = "C" + input_coord
-    new_coord_e = "E" + input_coord
-    ws[new_coord_a] = int(input_coord) - 1
-    ws[new_coord_b] = new_name
-    ws[new_coord_c] = new_ctrl_date
-    coord_with_date = ws.cell(int(input_coord) + 1, 3)
-    coord_with_date.number_format = 'DD-MM-YYYY'
-    ws[new_coord_e] = new_responsible
-    main_controls_sheet.save(main_controller_file)
 
 def update_controls(valid_list):
+  """Finds the correct control to validate"""
   empty_string = ""
 
   for item in valid_list:
@@ -108,10 +95,10 @@ def update_controls(valid_list):
 
 
     new_responsible=item[2]
-    for rows in ws.iter_rows(min_row=0,
-                           max_row=max_row_control_doc,
-                           min_col=1,
-                           max_col=5, ):
+    for rows in ws_prod_ctrl.iter_rows(min_row=0,
+                                       max_row=max_prod_ctrl_row,
+                                       min_col=1,
+                                       max_col=5, ):
       count = 0
       for cell in rows:
         if cell.value == None:
@@ -119,10 +106,11 @@ def update_controls(valid_list):
 
           if (empty_string.strip()[:-9] == validated):
             coord_of_interest = str(rows[3]).split('.')[1][:-1]
-            ws[coord_of_interest] = 'X'
+            ws_prod_ctrl[coord_of_interest] = 'X'
+            production_sheet.save(prod_controller_file)
             ctrl_name=empty_string.strip()[:-20][2:]
             input_list_excel.append((ctrl_name,new_ctrl_date,new_responsible))
-            #move("Downloaded controls\\" + item[0], "Evidence\\"+ctrl_name + "\\" + item[0])
+            move("Downloaded controls\\" + item[0], "Evidence\\"+ctrl_name + "\\" + item[0])
 
             empty_string = ""
           else:
@@ -135,7 +123,7 @@ def update_controls(valid_list):
             empty_string += str(cell.value) + " "
             count += 1
 
-  validator(input_list_excel)
+  input_to_excel(input_list_excel)
 
 
 
