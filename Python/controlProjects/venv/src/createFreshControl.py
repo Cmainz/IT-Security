@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 This file creates a new control from mainControls.xlsx file.
 For the control to function correctly a Template also needs to be written for each new control
@@ -60,3 +61,4 @@ set_ctrl(sheet, max_control_row, all_main_ctrls)
 
 check_for_match(all_main_ctrls, all_prod_ctrls)
 input_to_excel(list_for_excel)
+sheet.close()

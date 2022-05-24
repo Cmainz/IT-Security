@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from openpyxl import load_workbook
 from os import getcwd, walk
 from shutil import move

@@ -1,6 +1,7 @@
+#!/usr/bin/env python3
+
 ### Mail Libaries ###
 
-#pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 """System Module for finding creds"""
 from os import path
 """google Library to build gmail credentials"""

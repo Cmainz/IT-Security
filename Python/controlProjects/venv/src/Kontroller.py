@@ -101,7 +101,6 @@ def check_for_due(value0, value1, value2, value3, value4, today_date=date_of_tod
   global notes
   
   try:
-    print(int(value0))
     type(int(value0)) == int
 
     due_date=value2.date()
@@ -136,7 +135,7 @@ def check_for_due(value0, value1, value2, value3, value4, today_date=date_of_tod
       notes ="Nothing will be done"
       
     if value4 not in conInfo or conInfo[value4] == None:
-      print("Update needed for {}".format(value4))
+      print(f"Update needed for {value4}")
       return "Missing Contact Information"
     elif send_email == True:
       mailingList.append([value0, value1, due_date, value3, conInfo[value4],notes])
@@ -144,11 +143,9 @@ def check_for_due(value0, value1, value2, value3, value4, today_date=date_of_tod
       print(notes)
           
   except ValueError:
-    print("Something went wrong with your data.\n\"{}\" is not an index number. Control "
-          "\"{}\" will not be correctly analysed \nPlease check your Excel Sheet".format(value0,value1))
-    return "\"{}\" is not an index number. Control " \
-           "\"{}\" will not be correctly analysed \nPlease check your " \
-             "Excel Sheet".format(value0,value1)
+    return f"\"{value0}\" is not an index number. Control " \
+           f"\"{value1}\" will not be correctly analysed \nPlease check your " \
+             "Excel Sheet"
   
   return notes
 
@@ -184,3 +181,4 @@ if __name__ == "__main__":
   sending_email()
   with open("Missingcontrols.json", "w") as out_file:
     dump(mailingList, out_file,indent=6,default=str)
+sheet.close()

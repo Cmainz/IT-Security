@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+""" This function is to find and download the correct attachments"""
 from re import sub as substractor
 from re import compile as compiler
 from src.mailAPI import service
@@ -13,6 +15,7 @@ downloadable_Msg = []
 
 
 def previous_control():
+  """ Reads a file created by Controller.py"""
   with open("Missingcontrols.json") as json_file:
     sent_emails = load(json_file)
     for item in sent_emails:
@@ -21,9 +24,11 @@ def previous_control():
       sender = item[4]
       email_sender.append(sender)
 
-  return print(title_List)
+  return title_List
 
-def finding_msg_id():
+
+def finding_msg_id(list_item):
+  """ with a list of previous controls, finds the correct emailsender and attachment"""
   results = service.users().messages().list(userId='me', labelIds=['INBOX']).execute()
   messages = results.get('messages', [])
 
@@ -37,14 +42,16 @@ def finding_msg_id():
       title = msg['payload']['headers'][21]['value']
       reciever = msg['payload']['headers'][6]['value'][1:-1]
       mod_title = substractor(pattern, "", title)
-      if mod_title in title_List and reciever in email_sender:
+      if mod_title in list_item and reciever in email_sender:
         msg_id = (msg["id"])
         downloadable_Msg.append(msg_id)
+  return downloadable_Msg
 
 
-def download_attachment():
+def downloadable_attachment(emails):
+  """ Downloads the attachment if they rememeber to attach the file"""
   filename = ""
-  for item in downloadable_Msg:
+  for item in emails:
     message = service.users().messages().get(userId='me', id=item).execute()
     try:
       att_id = message['payload']['parts'][1]['body']['attachmentId']
@@ -58,16 +65,16 @@ def download_attachment():
         f.write(file_data)
         f.close()
       service.users().messages().delete(userId='me', id=item).execute()
-      
+
     except KeyError:
       service.users().messages().delete(userId='me', id=item).execute()
-      return print("No attachments in Control. Control will be deleted")
-    
-  
-  return print(filename)
+      return "No attachments in Control. Control will be deleted"
+
+  return filename
 
 
-##LOGIC##
-previous_control()
-finding_msg_id()
-download_attachment()
+
+##############LOGIC###########
+
+finding_msg_id(previous_control())
+downloadable_attachment(downloadable_Msg)

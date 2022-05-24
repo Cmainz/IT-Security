@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from openpyxl import load_workbook
 from datetime import date
 
@@ -10,8 +11,6 @@ def input_to_excel(chosen_ctrls):
   max_prod_ctrl_row = len(ws_prod_ctrl['A'])
 
   for i in range(len(chosen_ctrls)):
-    if (len(chosen_ctrls)) ==0:
-      i=1
     input_coord = str(max_prod_ctrl_row + i+1)
     new_name = chosen_ctrls[i - 1][0]
     new_ctrl_date = chosen_ctrls[i - 1][1]
